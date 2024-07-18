@@ -1,0 +1,28 @@
+services:
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile.dev
+    volumes:
+      - .:/code
+    ports:
+      - 8080:8080
+    depends_on:
+      - db
+  
+  db:
+    image: mysql/mysql-server:8.0
+    volumes:
+      - db-store:/var/lib/mysql
+    ports:
+      - 3306:3306
+    environment:
+      - MYSQL_DATABASE=sveltekit_fastapi_blogapp
+      - MYSQL_USER=kensuke
+      - MYSQL_PASSWORD=secret
+      - MYSQL_ROOT_PASSWORD=secret
+      - TZ=Asia/Tokyo
+
+volumes:
+  db-store:
+    
