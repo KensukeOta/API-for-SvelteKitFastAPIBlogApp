@@ -1,7 +1,10 @@
-fastapi>=0.111.1
+fastapi
 pydantic
 pydantic-settings
 pytest
 python-dotenv
 python-multipart
-sqlmodel>=0.0.20
+sqlmodel
+passlib[bcrypt]
+pyjwt
+mysqlclient
