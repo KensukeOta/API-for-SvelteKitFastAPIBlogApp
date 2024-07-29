@@ -33,6 +33,10 @@ class UserCreate(UserBase):
         if "password" in info.data and v != info.data["password"]:
             raise ValueError("passwords do not match")
         return v
+    
+
+class OAuthUserCreate(UserBase):
+    pass
 
 
 class UserPublic(UserBase):
