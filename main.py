@@ -5,7 +5,7 @@ from . import config
 from .database import create_db_and_tables
 from .models.user_model import User
 from .models.post_model import Post
-from .routers import oauth
+from .routers import users, oauth
 
 settings = config.get_settings()
 
@@ -23,6 +23,7 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
+app.include_router(users.router)
 app.include_router(oauth.router)
 
 
