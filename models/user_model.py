@@ -50,7 +50,6 @@ class UserUpdate(SQLModel):
     password_confirmation: str | None = Field(default=None, min_length=8, max_length=32)
     image: str | None = Field(default=None)
     provider: str | None = Field(default=None)
-    updated_at: datetime = Field(default=datetime.now())
 
     @field_validator("password_confirmation")
     def passwords_match(cls, v: str, info: ValidationInfo) -> str:

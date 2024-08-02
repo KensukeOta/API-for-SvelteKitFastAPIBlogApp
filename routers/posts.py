@@ -1,10 +1,11 @@
 from typing import Annotated
+from datetime import datetime
 
 from fastapi import APIRouter, Depends, HTTPException
 from sqlmodel import desc, select, Session
 
 from ..database import get_session
-from ..models.post_model import Post, PostCreate, PostPublic
+from ..models.post_model import Post, PostCreate, PostUpdate, PostPublic
 from ..models.responses import PostPublicWithUser
 
 router = APIRouter(
@@ -34,3 +35,17 @@ def read_post(*, session: Session = Depends(get_session), id: int) -> PostPublic
     if not post:
         raise HTTPException(status_code=404, detail="Post not found")
     return post
+
+
+@router.patch("/posts/{id}")
+def update_post(*, session: Session = Depends(get_session), id: int, post: PostUpdate) -> PostPublic:
+    db_post = session.get(Post, id)
+    if not db_post:
+        raise HTTPException(status_code=404, detail="Post not found")
+    post_data = post.model_dump(exclude_unset=True)
+    db_post.sqlmodel_update(post_data)
+    db_post.updated_at = datetime.now()
+    session.add(db_post)
+    session.commit()
+    session.refresh(db_post)
+    return db_post
