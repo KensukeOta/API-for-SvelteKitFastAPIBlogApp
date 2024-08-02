@@ -13,8 +13,8 @@ class UserBase(SQLModel):
     email: EmailStr = Field(max_length=254)
     image: str | None = Field(default=None)
     provider: str = Field()
-    created_at: datetime = Field(default=datetime.now())
-    updated_at: datetime = Field(default=datetime.now())
+    created_at: datetime = Field(default_factory=datetime.now)
+    updated_at: datetime = Field(default_factory=datetime.now)
 
 
 class User(UserBase, table=True):
