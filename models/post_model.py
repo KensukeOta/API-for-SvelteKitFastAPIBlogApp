@@ -11,8 +11,8 @@ class PostBase(SQLModel):
     title: str = Field(max_length=50)
     body: str = Field(sa_column=Column(TEXT), max_length=10000)
     user_id: int = Field(foreign_key="user.id", ondelete="CASCADE")
-    created_at: datetime = Field(default=datetime.now())
-    updated_at: datetime = Field(default=datetime.now())
+    created_at: datetime = Field(default_factory=datetime.now)
+    updated_at: datetime = Field(default_factory=datetime.now)
 
 
 class Post(PostBase, table=True):
