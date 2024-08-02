@@ -33,4 +33,3 @@ class PostUpdate(SQLModel):
     title: str | None = Field(default=None, max_length=50)
     body: str | None = Field(default=None, sa_column=Column(TEXT), max_length=10000)
     user_id: int | None = Field(default=None, foreign_key="user.id", ondelete="CASCADE")
-    updated_at: datetime = Field(default=datetime.now())
