@@ -49,3 +49,13 @@ def update_post(*, session: Session = Depends(get_session), id: int, post: PostU
     session.commit()
     session.refresh(db_post)
     return db_post
+
+
+@router.delete("/posts/{id}")
+def delete_post(*, session: Session = Depends(get_session), id: int):
+    post = session.get(Post, id)
+    if not post:
+        raise HTTPException(status_code=404, detail="Post not found")
+    session.delete(post)
+    session.commit()
+    return {"ok": True}
