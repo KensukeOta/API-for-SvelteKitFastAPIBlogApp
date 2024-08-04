@@ -1,6 +1,6 @@
 from typing import Annotated
 
-from fastapi import APIRouter, Depends
+from fastapi import APIRouter, Depends, HTTPException
 from passlib.context import CryptContext
 from sqlmodel import select, Session
 
@@ -23,6 +23,10 @@ def get_password_hash(password):
 
 @router.post("/users")
 def create_user(*, session: Annotated[Session, Depends(get_session)], user: UserCreate) -> UserPublic:
+    is_existing_user = session.exec(select(User).where(User.email == user.email, User.provider == user.provider)).first()
+    if is_existing_user:
+        raise HTTPException(status_code=409, detail="ユーザーは既に存在します")
+    
     password_digest = get_password_hash(user.password)
     extra_data = {"password_digest": password_digest}
     db_user = User.model_validate(user, update=extra_data)
