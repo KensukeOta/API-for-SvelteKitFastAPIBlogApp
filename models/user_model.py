@@ -56,3 +56,9 @@ class UserUpdate(SQLModel):
         if "password" in info.data and v != info.data["password"]:
             raise ValueError("passwords do not match")
         return v
+    
+
+class UserAuth(SQLModel):
+    email: EmailStr = Field()
+    password: str = Field()
+    provider: str = Field()
