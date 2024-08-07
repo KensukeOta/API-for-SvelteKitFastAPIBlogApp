@@ -1,7 +1,7 @@
 from typing import Annotated
 from datetime import datetime
 
-from fastapi import APIRouter, Depends, HTTPException
+from fastapi import APIRouter, Depends, HTTPException, status
 from sqlmodel import desc, select, Session
 
 from ..database import get_session
@@ -33,7 +33,7 @@ def read_posts(*, session: Annotated[Session, Depends(get_session)]) -> list[Pos
 def read_post(*, session: Session = Depends(get_session), id: int) -> PostPublicWithUser:
     post = session.get(Post, id)
     if not post:
-        raise HTTPException(status_code=404, detail="Post not found")
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Post not found")
     return post
 
 
@@ -41,7 +41,7 @@ def read_post(*, session: Session = Depends(get_session), id: int) -> PostPublic
 def update_post(*, session: Session = Depends(get_session), id: int, post: PostUpdate) -> PostPublic:
     db_post = session.get(Post, id)
     if not db_post:
-        raise HTTPException(status_code=404, detail="Post not found")
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Post not found")
     post_data = post.model_dump(exclude_unset=True)
     db_post.sqlmodel_update(post_data)
     db_post.updated_at = datetime.now()
@@ -55,7 +55,7 @@ def update_post(*, session: Session = Depends(get_session), id: int, post: PostU
 def delete_post(*, session: Session = Depends(get_session), id: int):
     post = session.get(Post, id)
     if not post:
-        raise HTTPException(status_code=404, detail="Post not found")
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Post not found")
     session.delete(post)
     session.commit()
     return {"ok": True}

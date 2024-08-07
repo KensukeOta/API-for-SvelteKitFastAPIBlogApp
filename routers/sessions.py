@@ -1,6 +1,6 @@
 from typing import Annotated
 
-from fastapi import APIRouter, Depends, HTTPException
+from fastapi import APIRouter, Depends, HTTPException, status
 from passlib.context import CryptContext
 from sqlmodel import select, Session
 
@@ -27,5 +27,5 @@ def authenticate(*, session: Annotated[Session, Depends(get_session)], user: Use
     if is_existing_user and verify_password(user.password, is_existing_user.password_digest):
         return is_existing_user
     else:
-        raise HTTPException(status_code=401, detail="ログインに失敗しました")
+        raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="ログインに失敗しました")
 
