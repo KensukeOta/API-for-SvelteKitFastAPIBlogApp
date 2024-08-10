@@ -99,6 +99,16 @@ def test_read_post(session: Session, client: TestClient):
     assert data["user_id"] == post.user_id
 
 
+def test_read_post_not_found(session: Session, client: TestClient):
+    post = Post(title="Hoge", body="HogeHoge", user_id=1)
+    session.add(post)
+    session.commit()
+
+    response = client.get("/v1/posts/100")
+
+    assert response.status_code == 404
+
+
 def test_update_post(session: Session, client: TestClient):
     post = Post(title="Sample Title", body="Sample Post", user_id=1)
     session.add(post)
@@ -115,6 +125,19 @@ def test_update_post(session: Session, client: TestClient):
     assert data["body"] == "Sample Post"
     assert data["user_id"] == post.user_id
 
+    
+def test_update_post_not_found(session: Session, client: TestClient):
+    post = Post(title="Sample Title", body="Sample Post", user_id=1)
+    session.add(post)
+    session.commit()
+
+    response = client.patch(
+        "/v1/posts/100", 
+        json={"title": "Sample Title Update"}
+    )
+
+    assert response.status_code == 404
+
 
 def test_delete_post(session: Session, client: TestClient):
     post = Post(title="Sample Title", body="Sample Body", user_id=1)
@@ -128,4 +151,13 @@ def test_delete_post(session: Session, client: TestClient):
     assert response.status_code == 200
 
     assert post_in_db is None
-    
+
+
+def test_delete_post_not_found(session: Session, client: TestClient):
+    post = Post(title="Sample Title", body="Sample Body", user_id=1)
+    session.add(post)
+    session.commit()
+
+    response = client.delete("/v1/posts/100")
+
+    assert response.status_code == 404
